@@ -25,25 +25,31 @@ These schemas were derived from the properties actually present on production it
 
 ## Design conventions
 
-- **Namespacing.** The general extension owns every single-segment key (`opencosmos:price`,
-  `opencosmos:session_id`, ...). Every sub-namespaced key (`opencosmos:<group>:...`) is owned
-  by a dedicated companion extension.
-- **Combinability.** Every extension sets `additionalProperties: false` on the fields object so
-  that unknown keys *inside its own namespace* are rejected (this forces new fields to be
-  documented). It uses a negative-lookahead `patternProperties` to explicitly allow all keys
-  outside its namespace, so extensions do not reject each other's properties when combined.
-  The general extension additionally allows `^opencosmos:[^:]+:` so sub-namespaced properties
-  from companion extensions pass through.
+- **Namespacing.** The general extension defines the common single-segment fields
+  (`opencosmos:copyright`, `opencosmos:data_area_km2`, ...). Every sub-namespaced key
+  (`opencosmos:<group>:...`) is owned by a dedicated companion extension. A few single-segment
+  fields that are specific to processing or a payload (e.g. `opencosmos:session_id`,
+  `opencosmos:calibration_site_type`, `opencosmos:per_payload_time_sync_s`) are defined in the
+  relevant companion extension rather than in the general one.
+- **Combinability.** Extensions are designed to be applied together without rejecting each
+  other's properties. The payload and processing extensions (`opencosmos-simera`,
+  `opencosmos-processing`, `opencosmos-isim90`, `opencosmos-alisio`) are strict *within their own
+  namespace*: they set `additionalProperties: false` and use a negative-lookahead
+  `patternProperties` so keys outside their namespace pass through untouched. The general
+  (`opencosmos`) and `opencosmos-qa` extensions are intentionally **permissive**
+  (`additionalProperties: true`): they type-check only the common fields they define and allow
+  any other `opencosmos:*` property, so new fields can be introduced while the spec matures and
+  so items carrying not-yet-modelled fields remain valid.
 - **Canonical types.** Schemas describe the *intended* type of each field (e.g. booleans as
   `boolean`, IDs as `string`). Some production data currently serialises values differently
   (e.g. `"true"` strings), those are tracked in [Known data mismatches](#known-data-mismatches)
   and should be migrated rather than reflected in the schema.
-- **Item properties vs collection summaries.** On items, `opencosmos:*` fields carry a single
-  value and are validated with the canonical type above. On collections the same fields appear
-  under `summaries` as STAC summary structures, an array of values (e.g. `opencosmos:resolution:
-  ["full", "limited"]`) or a `{"minimum", "maximum"}` range (e.g. `opencosmos:session_id`). This
-  is standard STAC and is intentionally left permissive; the extensions do not constrain the
-  contents of `summaries`.
+- **Item vs collection fields.** The general extension defines its fields separately for items
+  and collections. `opencosmos:resolution` and `opencosmos:high_resolution_read_permission` are
+  modelled as **collection-level** fields; the remaining common fields are item-level. On
+  collections these values usually appear under `summaries` as STAC summary structures (an array
+  of values, e.g. `opencosmos:resolution: ["full", "limited"]`, or a `{"minimum", "maximum"}`
+  range). Summary contents are intentionally left permissive and not constrained by the schemas.
 
 ## Attaching an extension
 
@@ -73,7 +79,7 @@ Item:
     "https://opencosmos.github.io/stac-extensions/opencosmos-simera/v1.0.0/schema.json"
   ],
   "properties": {
-    "opencosmos:product_type": "Satellite",
+    "opencosmos:data_area_km2": 1234.5,
     "opencosmos:simera:compression": 0
   }
 }
@@ -118,8 +124,7 @@ data-cleanup targets, not schema bugs.
 | `opencosmos-simera` | `opencosmos:simera:orthorectification` | boolean | string `"true"`/`"false"` |
 | `opencosmos-simera` | `opencosmos:simera:real_gcps_used` | boolean | string `"true"`/`"false"` |
 | `opencosmos-simera` | `opencosmos:simera:relative_correction` | boolean | mixed boolean and string |
-| `opencosmos` | `opencosmos:session_id` | string | integer for some payload families (e.g. `heleo-*`) |
-| `opencosmos` | `opencosmos:emergency` | boolean | string `"false"` in a few items |
+| `opencosmos-simera` / `-processing` / `-isim90` / `-alisio` | `opencosmos:session_id` | string | integer for some payload families (e.g. `heleo-*`) |
 | `opencosmos-qa` | `opencosmos:qa:rejected` | boolean | string `"true"` in some items |
 | `opencosmos-processing` | `opencosmos:calibration:georeference` | object | integer sentinel (`0`) in some items |
 
@@ -127,5 +132,6 @@ data-cleanup targets, not schema bugs.
 
 The discovery and validation scripts used to build these schemas query the production STAC API
 read-only. To re-check the schemas against live data, meta-validate each `schema.json` with a
-Draft-07 validator and validate item `properties` against each extension's `#/definitions/fields`
-object, grouping by the namespace each extension owns.
+Draft-07 validator and validate item `properties` against each extension's item fields
+definition (`#/definitions/item_fields` for the general extension, `#/definitions/fields` for the
+companions), grouping by the namespace each extension owns.
