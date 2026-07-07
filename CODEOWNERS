@@ -1,0 +1,3 @@
+# Only the OpenCosmos DataCosmos team can review/merge changes to the extensions.
+# Replace with the correct GitHub team/handles before enabling branch protection.
+*       @opencosmos/datacosmos

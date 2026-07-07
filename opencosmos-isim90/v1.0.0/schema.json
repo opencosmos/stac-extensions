@@ -1,0 +1,56 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://opencosmos.github.io/stac-extensions/opencosmos-isim90/v1.0.0/schema.json",
+  "title": "OpenCosmos ISIM-90 Extension",
+  "description": "STAC OpenCosmos ISIM-90 Extension for ISIM-90 payload processing metadata. Applied to items produced from the ISIM-90 payload.",
+  "type": "object",
+  "required": ["stac_extensions"],
+  "properties": {
+    "stac_extensions": {
+      "type": "array",
+      "contains": {
+        "const": "https://opencosmos.github.io/stac-extensions/opencosmos-isim90/v1.0.0/schema.json"
+      }
+    }
+  },
+  "oneOf": [
+    {
+      "$comment": "This is the schema for STAC Items.",
+      "type": "object",
+      "required": ["type", "properties"],
+      "properties": {
+        "type": {
+          "const": "Feature"
+        },
+        "properties": {
+          "$ref": "#/definitions/fields"
+        }
+      }
+    }
+  ],
+  "definitions": {
+    "fields": {
+      "type": "object",
+      "properties": {
+        "opencosmos:isim90:start_frame": {
+          "type": "string",
+          "title": "Start Frame",
+          "description": "Index of the first frame of the acquisition, as reported by the payload.",
+          "pattern": "^[0-9]+$",
+          "examples": ["166"]
+        },
+        "opencosmos:isim90:end_frame": {
+          "type": "string",
+          "title": "End Frame",
+          "description": "Index of the last frame of the acquisition, as reported by the payload.",
+          "pattern": "^[0-9]+$",
+          "examples": ["221"]
+        }
+      },
+      "patternProperties": {
+        "^(?!opencosmos:isim90:)": {}
+      },
+      "additionalProperties": false
+    }
+  }
+}

@@ -1,0 +1,85 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://opencosmos.github.io/stac-extensions/opencosmos-simera/v1.0.0/schema.json",
+  "title": "OpenCosmos Simera Extension",
+  "description": "STAC OpenCosmos Simera Extension for Simera sensor processing metadata. Applied to items produced from the Simera payload.",
+  "type": "object",
+  "required": ["stac_extensions"],
+  "properties": {
+    "stac_extensions": {
+      "type": "array",
+      "contains": {
+        "const": "https://opencosmos.github.io/stac-extensions/opencosmos-simera/v1.0.0/schema.json"
+      }
+    }
+  },
+  "oneOf": [
+    {
+      "$comment": "This is the schema for STAC Items.",
+      "type": "object",
+      "required": ["type", "properties"],
+      "properties": {
+        "type": {
+          "const": "Feature"
+        },
+        "properties": {
+          "$ref": "#/definitions/fields"
+        }
+      }
+    }
+  ],
+  "definitions": {
+    "fields": {
+      "type": "object",
+      "properties": {
+        "opencosmos:simera:absolute_correction": {
+          "type": "boolean",
+          "title": "Absolute Correction",
+          "description": "Indicates whether absolute radiometric correction has been applied to the image."
+        },
+        "opencosmos:simera:relative_correction": {
+          "type": "boolean",
+          "title": "Relative Correction",
+          "description": "Indicates whether relative radiometric correction has been applied to the image."
+        },
+        "opencosmos:simera:band_alignment_correction": {
+          "type": "boolean",
+          "title": "Band Alignment Correction",
+          "description": "Indicates whether band alignment correction has been applied to align spectral bands."
+        },
+        "opencosmos:simera:geometric_correction": {
+          "type": "boolean",
+          "title": "Geometric Correction",
+          "description": "Indicates whether geometric correction has been applied to the image."
+        },
+        "opencosmos:simera:orthorectification": {
+          "type": "boolean",
+          "title": "Orthorectification",
+          "description": "Indicates whether orthorectification has been applied to remove terrain distortions."
+        },
+        "opencosmos:simera:real_gcps_used": {
+          "type": "boolean",
+          "title": "Real GCPs Used",
+          "description": "Indicates whether real Ground Control Points (GCPs) were used for georeferencing."
+        },
+        "opencosmos:simera:compression": {
+          "type": "integer",
+          "title": "Compression",
+          "description": "Compression setting used during image acquisition. 0 indicates no compression.",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "opencosmos:simera:capture_mode": {
+          "type": "string",
+          "title": "Capture Mode",
+          "description": "Acquisition mode used by the Simera payload.",
+          "examples": ["linescan"]
+        }
+      },
+      "patternProperties": {
+        "^(?!opencosmos:simera:)": {}
+      },
+      "additionalProperties": false
+    }
+  }
+}

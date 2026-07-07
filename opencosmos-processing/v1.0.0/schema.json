@@ -1,0 +1,145 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://opencosmos.github.io/stac-extensions/opencosmos-processing/v1.0.0/schema.json",
+  "title": "OpenCosmos Processing Extension",
+  "description": "STAC OpenCosmos Processing Extension for calibration, georeferencing and processing-pipeline metadata produced while generating a product. Owns the opencosmos:calibration:, opencosmos:georeference: and opencosmos:process: namespaces.",
+  "type": "object",
+  "required": ["stac_extensions"],
+  "properties": {
+    "stac_extensions": {
+      "type": "array",
+      "contains": {
+        "const": "https://opencosmos.github.io/stac-extensions/opencosmos-processing/v1.0.0/schema.json"
+      }
+    }
+  },
+  "oneOf": [
+    {
+      "$comment": "This is the schema for STAC Items.",
+      "type": "object",
+      "required": ["type", "properties"],
+      "properties": {
+        "type": {
+          "const": "Feature"
+        },
+        "properties": {
+          "$ref": "#/definitions/fields"
+        }
+      }
+    }
+  ],
+  "definitions": {
+    "fields": {
+      "type": "object",
+      "properties": {
+        "opencosmos:calibration:time_sync_offset": {
+          "type": "number",
+          "title": "Time Sync Offset",
+          "description": "Time synchronisation offset applied during calibration, in seconds."
+        },
+        "opencosmos:calibration:georeference": {
+          "$ref": "#/definitions/calibration_georeference"
+        },
+        "opencosmos:georeference:manual": {
+          "type": "object",
+          "title": "Manual Georeference",
+          "description": "Manually applied georeferencing pixel offsets.",
+          "properties": {
+            "x_offset": {
+              "type": "integer",
+              "title": "X Offset",
+              "description": "Manual horizontal offset in pixels."
+            },
+            "y_offset": {
+              "type": "integer",
+              "title": "Y Offset",
+              "description": "Manual vertical offset in pixels."
+            }
+          },
+          "additionalProperties": false
+        },
+        "opencosmos:process:ready": {
+          "type": "boolean",
+          "title": "Process Ready",
+          "description": "Indicates whether the item is ready for downstream processing."
+        }
+      },
+      "patternProperties": {
+        "^(?!opencosmos:(calibration|georeference|process):)": {}
+      },
+      "additionalProperties": false
+    },
+    "calibration_georeference": {
+      "type": "object",
+      "title": "Calibration Georeference",
+      "description": "Statistics describing the ephemeris and attitude data used to georeference the product.",
+      "properties": {
+        "attitude_interp_mode": {
+          "type": "string",
+          "title": "Attitude Interpolation Mode",
+          "description": "Interpolation mode used for attitude data."
+        },
+        "position_velocity_interp_mode": {
+          "type": "string",
+          "title": "Position/Velocity Interpolation Mode",
+          "description": "Interpolation mode used for position and velocity data."
+        },
+        "avg_angular_rate_frequency_hz": {
+          "type": "number",
+          "title": "Average Angular Rate Frequency (Hz)",
+          "description": "Average frequency of angular rate samples, in Hertz.",
+          "minimum": 0
+        },
+        "avg_attitude_frequency_hz": {
+          "type": "number",
+          "title": "Average Attitude Frequency (Hz)",
+          "description": "Average frequency of attitude samples, in Hertz.",
+          "minimum": 0
+        },
+        "avg_position_frequency_hz": {
+          "type": "number",
+          "title": "Average Position Frequency (Hz)",
+          "description": "Average frequency of position samples, in Hertz.",
+          "minimum": 0
+        },
+        "avg_velocity_frequency_hz": {
+          "type": "number",
+          "title": "Average Velocity Frequency (Hz)",
+          "description": "Average frequency of velocity samples, in Hertz.",
+          "minimum": 0
+        },
+        "no_angularRates": {
+          "type": "integer",
+          "title": "Number of Angular Rates",
+          "description": "Number of angular rate samples used.",
+          "minimum": 0
+        },
+        "no_angular_rates": {
+          "type": "integer",
+          "title": "Number of Angular Rates (snake_case variant)",
+          "description": "Number of angular rate samples used. Alternate snake_case spelling of no_angularRates emitted by some pipeline versions.",
+          "minimum": 0
+        },
+        "no_attitudes": {
+          "type": "integer",
+          "title": "Number of Attitudes",
+          "description": "Number of attitude samples used.",
+          "minimum": 0
+        },
+        "no_positions": {
+          "type": "integer",
+          "title": "Number of Positions",
+          "description": "Number of position samples used.",
+          "minimum": 0
+        },
+        "no_velocities": {
+          "type": "integer",
+          "title": "Number of Velocities",
+          "description": "Number of velocity samples used.",
+          "minimum": 0
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

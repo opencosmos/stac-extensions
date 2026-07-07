@@ -1,0 +1,48 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://opencosmos.github.io/stac-extensions/opencosmos-alisio/v1.0.0/schema.json",
+  "title": "OpenCosmos Alisio Extension",
+  "description": "STAC OpenCosmos Alisio Extension for Alisio payload processing metadata. Applied to items produced from the Alisio payload.",
+  "type": "object",
+  "required": ["stac_extensions"],
+  "properties": {
+    "stac_extensions": {
+      "type": "array",
+      "contains": {
+        "const": "https://opencosmos.github.io/stac-extensions/opencosmos-alisio/v1.0.0/schema.json"
+      }
+    }
+  },
+  "oneOf": [
+    {
+      "$comment": "This is the schema for STAC Items.",
+      "type": "object",
+      "required": ["type", "properties"],
+      "properties": {
+        "type": {
+          "const": "Feature"
+        },
+        "properties": {
+          "$ref": "#/definitions/fields"
+        }
+      }
+    }
+  ],
+  "definitions": {
+    "fields": {
+      "type": "object",
+      "properties": {
+        "opencosmos:alisio:mode": {
+          "type": "string",
+          "title": "Mode",
+          "description": "Acquisition mode used by the Alisio payload. The value \"None\" is used when no mode was reported.",
+          "examples": ["GT", "None"]
+        }
+      },
+      "patternProperties": {
+        "^(?!opencosmos:alisio:)": {}
+      },
+      "additionalProperties": false
+    }
+  }
+}
