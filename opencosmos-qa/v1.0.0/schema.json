@@ -2,7 +2,7 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://opencosmos.github.io/stac-extensions/opencosmos-qa/v1.0.0/schema.json",
   "title": "OpenCosmos QA Extension",
-  "description": "STAC OpenCosmos Quality Assurance Extension for satellite imagery products. Applied to items in QA collections. Enforces that the item belongs to a QA collection (opencosmos:collection_type = 'qa') and, when an item is rejected, that the rejection reason, textual rejection codes and rejection type are present. Also captures geometric accuracy and image quality statistics produced by the QA pipeline.",
+  "description": "STAC OpenCosmos Quality Assurance Extension for satellite imagery products. Applied to items in QA collections. Enforces that the item belongs to a QA collection (opencosmos:collection_type = 'qa') and, when an item is rejected, that the rejection reason, textual rejection codes and rejection type are present.",
   "type": "object",
   "required": ["stac_extensions"],
   "properties": {
@@ -103,157 +103,10 @@
             ]
           },
           "uniqueItems": true
-        },
-        "opencosmos:qa:coarse-geometric-check-passed": {
-          "type": "boolean",
-          "title": "Coarse Geometric Check Passed",
-          "description": "Indicates whether the coarse geometric consistency check passed."
-        },
-        "opencosmos:qa:roll_angle_delta": {
-          "type": "number",
-          "title": "Roll Angle Delta",
-          "description": "Difference between the commanded and achieved roll angle, in degrees."
-        },
-        "opencosmos:qa:geometric_accuracy:shift_ce90": {
-          "type": "number",
-          "title": "Geometric Accuracy Shift CE90",
-          "description": "Circular Error at 90% confidence of the geolocation shift, in pixels. A value of -1 indicates the metric could not be computed."
-        },
-        "opencosmos:qa:geometric_accuracy:shift_ce95": {
-          "type": "number",
-          "title": "Geometric Accuracy Shift CE95",
-          "description": "Circular Error at 95% confidence of the geolocation shift, in pixels. A value of -1 indicates the metric could not be computed."
-        },
-        "opencosmos:qa:geometric_accuracy:threshold_met": {
-          "type": "boolean",
-          "title": "Geometric Accuracy Threshold Met",
-          "description": "Indicates whether the geometric accuracy met the configured threshold."
-        },
-        "opencosmos:qa:color_stats": {
-          "$ref": "#/definitions/color_stats"
-        },
-        "opencosmos:qa:noise_stats": {
-          "$ref": "#/definitions/noise_stats"
         }
       },
-      "patternProperties": {
-        "^(?!opencosmos:qa:)": {}
-      },
-      "additionalProperties": false
-    },
-    "color_stats": {
-      "type": "object",
-      "title": "Color Statistics",
-      "description": "Color analysis statistics used to generate visually appealing true color images.",
-      "required": ["asset"],
-      "properties": {
-        "asset": {
-          "type": "string",
-          "title": "Asset",
-          "description": "The asset key that was analyzed."
-        },
-        "avg_saturation": {
-          "type": "number",
-          "title": "Average Saturation",
-          "description": "Average saturation value across the image.",
-          "minimum": 0
-        },
-        "colorfulness_score": {
-          "type": "number",
-          "title": "Colorfulness Score",
-          "description": "Computed colorfulness score of the image.",
-          "minimum": 0
-        },
-        "colorfulness_threshold": {
-          "type": "number",
-          "title": "Colorfulness Threshold",
-          "description": "Threshold value used to determine if the image is colorful.",
-          "minimum": 0
-        },
-        "extreme_colors": {
-          "type": "number",
-          "title": "Extreme Colors",
-          "description": "Count or percentage of extreme color values in the image.",
-          "minimum": 0
-        },
-        "high_saturation_pixels": {
-          "type": "number",
-          "title": "High Saturation Pixels",
-          "description": "Percentage of pixels with high saturation values.",
-          "minimum": 0
-        },
-        "is_colorful": {
-          "type": "boolean",
-          "title": "Is Colorful",
-          "description": "Whether the image is considered colorful based on the threshold."
-        },
-        "recommendation": {
-          "type": "string",
-          "title": "Recommendation",
-          "description": "Human-readable recommendation for color correction if needed."
-        },
-        "unnatural_colors": {
-          "type": "number",
-          "title": "Unnatural Colors",
-          "description": "Percentage of pixels with unnatural color values.",
-          "minimum": 0
-        }
-      },
-      "additionalProperties": false
-    },
-    "noise_stats": {
-      "type": "object",
-      "title": "Noise Statistics",
-      "description": "Noise analysis statistics computed to assess image quality.",
-      "required": ["asset"],
-      "properties": {
-        "asset": {
-          "type": "string",
-          "title": "Asset",
-          "description": "The asset key that was analyzed."
-        },
-        "is_noisy": {
-          "type": "boolean",
-          "title": "Is Noisy",
-          "description": "Whether the image is considered noisy based on the threshold."
-        },
-        "laplacian_variance": {
-          "type": "number",
-          "title": "Laplacian Variance",
-          "description": "Variance of the Laplacian, used as a sharpness/noise indicator.",
-          "minimum": 0
-        },
-        "noise_level": {
-          "type": "number",
-          "title": "Noise Level",
-          "description": "Estimated noise level of the image.",
-          "minimum": 0
-        },
-        "noise_score": {
-          "type": "number",
-          "title": "Noise Score",
-          "description": "Computed noise score of the image.",
-          "minimum": 0
-        },
-        "noise_threshold": {
-          "type": "number",
-          "title": "Noise Threshold",
-          "description": "Threshold value used to determine if the image is noisy.",
-          "minimum": 0
-        },
-        "psnr": {
-          "type": "number",
-          "title": "PSNR",
-          "description": "Peak Signal-to-Noise Ratio of the image, in decibels."
-        },
-        "std_deviation": {
-          "type": "number",
-          "title": "Standard Deviation",
-          "description": "Standard deviation of pixel values, used as a noise indicator.",
-          "minimum": 0
-        }
-      },
-      "additionalProperties": false
+      "$comment": "additionalProperties is intentionally permissive: only the common QA fields above are validated for now. Other opencosmos:qa:* fields (e.g. geometric accuracy, colour/noise statistics) are allowed but not yet enforced.",
+      "additionalProperties": true
     }
   }
 }

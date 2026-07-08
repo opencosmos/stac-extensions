@@ -1,3 +1,4 @@
-# Maintainers who must review/approve changes to the extensions.
-# NOTE: each handle must have write access to this repo, otherwise GitHub ignores it.
-*       @afonsovieira @pepjo @werber @alexisjeriha @tw-smith
+# Maintainers who review/approve changes to the extensions.
+# Managed via the @opencosmos/DataCosmos team, which has write access to this repo.
+# To add/remove a maintainer, change the team membership (not this file).
+*       @opencosmos/DataCosmos
