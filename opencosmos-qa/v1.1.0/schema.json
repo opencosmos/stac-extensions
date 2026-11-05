@@ -1,0 +1,113 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://opencosmos.github.io/stac-extensions/opencosmos-qa/v1.1.0/schema.json",
+  "title": "OpenCosmos QA Extension",
+  "description": "STAC OpenCosmos Quality Assurance Extension for satellite imagery products. Applied to items in QA collections. Enforces that the item belongs to a QA collection (opencosmos:collection_type = 'qa') and, when an item is rejected, that the rejection reason, textual rejection codes and rejection type are present.",
+  "type": "object",
+  "required": ["stac_extensions"],
+  "properties": {
+    "stac_extensions": {
+      "type": "array",
+      "contains": {
+        "const": "https://opencosmos.github.io/stac-extensions/opencosmos-qa/v1.1.0/schema.json"
+      }
+    }
+  },
+  "oneOf": [
+    {
+      "$comment": "This is the schema for STAC Items.",
+      "type": "object",
+      "required": ["type", "properties"],
+      "properties": {
+        "type": {
+          "const": "Feature"
+        },
+        "properties": {
+          "$ref": "#/definitions/fields"
+        }
+      }
+    }
+  ],
+  "definitions": {
+    "fields": {
+      "type": "object",
+      "required": ["opencosmos:collection_type"],
+      "allOf": [
+        {
+          "$comment": "When an item is rejected, the reason, textual codes and rejection type must all be present.",
+          "if": {
+            "required": ["opencosmos:qa:rejected"],
+            "properties": {
+              "opencosmos:qa:rejected": { "const": true }
+            }
+          },
+          "then": {
+            "required": [
+              "opencosmos:qa:rejected_reason",
+              "opencosmos:qa:rejection_codes",
+              "opencosmos:qa:rejection_type"
+            ]
+          }
+        }
+      ],
+      "properties": {
+        "opencosmos:collection_type": {
+          "const": "qa",
+          "title": "Collection Type",
+          "description": "Type of collection containing this item. Must be 'qa' for items validated by this extension."
+        },
+        "opencosmos:qa:assets_valid": {
+          "type": "boolean",
+          "title": "Assets Valid",
+          "description": "Indicates whether all assets have passed validation checks."
+        },
+        "opencosmos:qa:rejected": {
+          "type": "boolean",
+          "title": "Rejected",
+          "description": "Indicates whether the item has been rejected during QA review."
+        },
+        "opencosmos:qa:rejected_reason": {
+          "title": "Rejected Reason",
+          "description": "Human-readable reason(s) explaining why the item was rejected. A single string or an array of strings when multiple checks failed.",
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          ]
+        },
+        "opencosmos:qa:rejection_type": {
+          "type": "string",
+          "title": "Rejection Type",
+          "description": "Whether the rejection was performed manually by an operator or automatically by the QA pipeline. Constrained to these two values for now.",
+          "enum": ["manual", "automated"]
+        },
+        "opencosmos:qa:rejection_codes": {
+          "type": "array",
+          "title": "Rejection Codes",
+          "description": "Machine-readable textual codes identifying why the item was rejected. Codes are text, not numeric. One or more of the allowed values: band_coregistration (band co-registration issue), no_data (no data), scene_covered (scene covered by cloud/snow/etc.), calibration_image (calibration image), geometric_artifact (geometric artifact), other, raw_data_unusable (the raw payload data could not be decoded into a product: no packets, no session, no time window).",
+          "items": {
+            "type": "string",
+            "enum": [
+              "band_coregistration",
+              "no_data",
+              "scene_covered",
+              "calibration_image",
+              "geometric_artifact",
+              "other",
+              "raw_data_unusable"
+            ]
+          },
+          "uniqueItems": true
+        }
+      },
+      "$comment": "additionalProperties is intentionally permissive: only the common QA fields above are validated for now. Other opencosmos:qa:* fields (e.g. geometric accuracy, colour/noise statistics) are allowed but not yet enforced.",
+      "additionalProperties": true
+    }
+  }
+}
