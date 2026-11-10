@@ -90,7 +90,7 @@
         "opencosmos:qa:rejection_codes": {
           "type": "array",
           "title": "Rejection Codes",
-          "description": "Machine-readable textual codes identifying why the item was rejected. Codes are text, not numeric. One or more of the allowed values: band_coregistration (band co-registration issue), no_data (no data), scene_covered (scene covered by cloud/snow/etc.), calibration_image (calibration image), geometric_artifact (geometric artifact), other, raw_data_unusable (the raw payload data could not be decoded into a product: no packets, no session, no time window).",
+          "description": "Machine-readable textual codes identifying why the item was rejected. Codes are text, not numeric. One or more of the allowed values: band_coregistration (band co-registration issue), no_data (no data), scene_covered (scene covered by cloud/snow/etc.), calibration_image (calibration image), geometric_artifact (geometric artifact), other, raw_data_unusable (the raw payload data could not be decoded into a product: no packets, no session, no time window), parent_rejected (the product was derived from a rejected parent product; the parent's own codes are carried alongside).",
           "items": {
             "type": "string",
             "enum": [
@@ -100,7 +100,8 @@
               "calibration_image",
               "geometric_artifact",
               "other",
-              "raw_data_unusable"
+              "raw_data_unusable",
+              "parent_rejected"
             ]
           },
           "uniqueItems": true
