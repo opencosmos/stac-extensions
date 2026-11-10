@@ -14,7 +14,7 @@ These schemas were derived from the properties actually present on production it
 | Extension | Namespace(s) owned | Applies to | Schema |
 |-----------|--------------------|------------|--------|
 | `opencosmos` (general) | `opencosmos:<field>` (single segment) | Item, Collection, Catalog | [opencosmos/v1.0.0/schema.json](opencosmos/v1.0.0/schema.json) |
-| `opencosmos-qa` | `opencosmos:qa:*` | Item | [opencosmos-qa/v1.0.0/schema.json](opencosmos-qa/v1.0.0/schema.json) |
+| `opencosmos-qa` | `opencosmos:qa:*` | Item | [opencosmos-qa/v1.1.0/schema.json](opencosmos-qa/v1.1.0/schema.json) (adds the `raw_data_unusable` and `parent_rejected` rejection codes; [v1.0.0](opencosmos-qa/v1.0.0/schema.json) stays served) |
 | `opencosmos-simera` | `opencosmos:simera:*` | Item | [opencosmos-simera/v1.0.0/schema.json](opencosmos-simera/v1.0.0/schema.json) |
 | `opencosmos-processing` | `opencosmos:calibration:*`, `opencosmos:georeference:*`, `opencosmos:process:*` | Item | [opencosmos-processing/v1.0.0/schema.json](opencosmos-processing/v1.0.0/schema.json) |
 | `opencosmos-isim90` | `opencosmos:isim90:*` | Item | [opencosmos-isim90/v1.0.0/schema.json](opencosmos-isim90/v1.0.0/schema.json) |
@@ -107,6 +107,11 @@ match its public URL. If the repository or host ever changes, update every `$id`
 Extensions are versioned in the URL (`v1.0.0`). Make backwards-incompatible changes under a new
 version directory and leave existing versions in place, since already-published items reference
 them by URL.
+
+An additive change, such as a new value in an enum, gets a new minor version (for example
+`opencosmos-qa` v1.0.0 to v1.1.0, which adds the `raw_data_unusable` and `parent_rejected`
+rejection codes). Items that use the new value declare the new URL; items already published keep
+validating against the version they declare.
 
 ## Known data mismatches
 
